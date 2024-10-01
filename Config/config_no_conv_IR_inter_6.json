@@ -1,0 +1,29 @@
+{
+  "model": "GINEGLOBAL",
+  "dir_name": "IR_spectra_predictions_fingerprint_300_3500_feat_numpeak_morgan_pooling5_loss15381",
+  "split_f": 5,
+  "target_col": "RAMAN_SPECTRUM_POOLED",
+  "type_pred": "inter_6_down_IR",
+  "starting_dtf": "dtf_data_IR_smile_no_dup_no_conv",
+  "featurizer": "MolGraphConv",
+  "description": "",
+  "wl_region": {
+    "finger": {
+      "low": 100,
+      "up": 900
+    },
+    "ch": {
+      "low": 800,
+      "up": 1600
+    }
+  },
+  "split": {
+    "random_state": 42,
+    "test_size": 0.2
+  },
+  "global_feature_list":[
+    "PRED_NUM_PEAK",
+    "MOLECULAR_FINGERPRINT",
+    "MOLECULAR_FINGERPRINT_MORGAN"
+  ]
+}
