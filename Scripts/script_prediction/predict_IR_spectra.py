@@ -31,7 +31,7 @@ def predict(config, config_model, mc_sam):
     tolerance = 5
 
     true_dataset = pd.read_pickle(f"data/raw/test_{config['starting_dtf']}.pickle")
-    true_dataset.rename(columns={'raman_pred': 'raman_pred_num_peak'}, inplace=True)
+    true_dataset.rename(columns={'IR_pred': 'IR_pred_num_peak'}, inplace=True)
     test_dataset = MoleculeDataset(root="data", filename=f"test_{config['starting_dtf']}.pickle",
                                    target_col=config['target_col'], path_proc=path_proc, test='test',
                                    global_feature_col=config.get('global_feature_list', []),
@@ -87,8 +87,8 @@ def predict(config, config_model, mc_sam):
 
     df = pd.DataFrame({
         "smile": smiles,
-        "raman_true": y_true,
-        "raman_pred": y_pred,
+        "IR_true": y_true,
+        "IR_pred": y_pred,
         "pred_num_peak": num_peaks
     })
 
@@ -99,7 +99,7 @@ def predict(config, config_model, mc_sam):
 if __name__ == '__main__':
 
     import json
-    str_dir = "spectra_predictions_ch_1900_3500_feat_numpeak_loss_10831"
+    str_dir = "IR_spectra_predictions_fingerprint_300_3500_prova"
     with open(rf"models/{str_dir}/config/config_model.json") as file:
         config_model = json.load(file)
     with open(rf"models/{str_dir}/config/config.json") as file:

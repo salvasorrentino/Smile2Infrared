@@ -18,9 +18,9 @@ def plot_two_spectrum(true, pred, start, stop, marks=False, fill=True, rescale=1
     fig, ax = plt.subplots(1, 1, figsize=(16, 9), dpi=300)
 
     if fill:
-        ax.fill_between(x, y1=true, y2=0, label='DFT-Calculated Raman Spectrum', alpha=0.5, color=mycolors[1],
+        ax.fill_between(x, y1=true, y2=0, label='DFT-Calculated IR Spectrum', alpha=0.5, color=mycolors[1],
                         linewidth=line_width/3.75)
-        ax.fill_between(x, y1=pred, y2=0, label='Predicted Raman Spectrum', alpha=0.5, color=mycolors[0],
+        ax.fill_between(x, y1=pred, y2=0, label='Predicted IR Spectrum', alpha=0.5, color=mycolors[0],
                         linewidth=line_width/3.75)
     else:
         ax.plot(x, true, label='DFT-Calculated Spectrum', color=mycolors[1], linewidth=line_width / 3.75)
@@ -34,8 +34,8 @@ def plot_two_spectrum(true, pred, start, stop, marks=False, fill=True, rescale=1
                     marker='x', s=25, label='Predicted Local Maxima')
 
     # Decorations
-    ax.set_title('Raman Spectrum (DFT-Calculated vs Predicted)', fontsize=18/3.75)
-    ax.set_xlabel('Raman shift ($cm^{-1}$)', fontsize=25/3.75)
+    ax.set_title('IR Spectrum (DFT-Calculated vs Predicted)', fontsize=18/3.75)
+    ax.set_xlabel('IR shift ($cm^{-1}$)', fontsize=25/3.75)
     ax.set_ylabel('Intensity (a.u.)', fontsize=25/3.75)
     ax.legend(loc='best', fontsize=18/3.75)
     # ax.tick_params(axis='x', labelsize=12)
@@ -100,8 +100,8 @@ def plot_three_spectrum(true, pred1, pred2, start, stop, marks=False, fill=True,
         plt.scatter(x[peaks_pred2], pred1[peaks_pred2], color='red',
                     marker='x', s=25, label='Predicted Local Maxima')
     # Decorations
-    ax.set_title('Raman Spectrum (DFT-Calculated vs Predicted)', fontsize=18/3.75)
-    ax.set_xlabel('Raman shift ($cm^{-1}$)', fontsize=25/3.75)
+    ax.set_title('IR Spectrum (DFT-Calculated vs Predicted)', fontsize=18/3.75)
+    ax.set_xlabel('IR shift ($cm^{-1}$)', fontsize=25/3.75)
     ax.set_ylabel('Intensity (a.u.)', fontsize=25/3.75)
     ax.legend(loc='best', fontsize=18/3.75)
     # ax.tick_params(axis='x', labelsize=12)
@@ -129,3 +129,15 @@ def plot_three_spectrum(true, pred1, pred2, start, stop, marks=False, fill=True,
     plt.show()
 
 
+def plot_bar_f1(df):
+    bin = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+
+    plt.figure(figsize=(10, 6))
+    plt.hist(df['f1'], bins=bin, color='skyblue', edgecolor='black')
+
+    plt.xlabel('F1 Score')
+    plt.ylabel('Numero di Molecole')
+    plt.text(df.f1.mean() + 0.01, max(np.histogram(df['f1'], bins=bin)[0]) - 1, f'Mean: {df.f1.mean():.2f}', color='red')
+
+    plt.tight_layout()
+    plt.show()

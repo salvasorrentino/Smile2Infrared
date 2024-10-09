@@ -2,25 +2,16 @@ import torch
 import shutil
 import time
 from torch_geometric.loader import DataLoader
-#from torch_geometric.data import DataLoader
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 from torch.nn import BCELoss
 import datetime
 from Scripts.dataset import MoleculeDataset
 from Scripts.script_model.model import GNN, GINE, ClassModel, ModelPredPos, ModelPredNumPeak, GINEGLOBAL, ClassModelGlobal
-from Scripts.utils import resume, checkpoint, EarlyStopping, count_parameters
+from Scripts.utils_model.utils_model import resume, checkpoint, EarlyStopping, count_parameters
 from Scripts.loss import (RMSELoss, PeakAwareLoss, BinaryWeightedRMSELoss, WeightedRMSELoss, FocalLoss,
                   HuberLoss, SID, CosineSimilarityLoss, ModifiedRMSELossPeakEmphasis, RMSE, F1Loss)
-import pandas as pd
-import pickle
 import os
-# TODO: MinMaxScaler, PowerScaler, More feats, new loss (quantile, huber?)
-# TODO: Test con pooling
-
-
-
-
 
 
 def compute_metrics(y_pred, y_true, epoch, state):
@@ -106,7 +97,7 @@ def test_one_epoch(epoch, model, device, valid_loader, loss_fn):
                      batch.batch)
         loss = loss_fn(torch.squeeze(pred).reshape(-1), batch.y.float())
 
-         # Update tracking
+        # Update tracking
         running_loss += loss.item()
         step += 1
         all_preds.append(pred.cpu().detach().numpy())

@@ -1,6 +1,4 @@
-import json
 import pandas as pd
-import numpy
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem import rdFingerprintGenerator
@@ -48,36 +46,10 @@ def add_morgan_fingerprint(dtf_in):
 
 if __name__ == '__main__':
 
-    # dct_pred_num_peak_down = pd.read_pickle(r'data/predictions/pred_pred_num_peak_down.pickle')
-    # dct_pred_num_peak_up = pd.read_pickle(r'data/predictions/pred_pred_num_peak_up.pickle')
-
     dct_pred_num_peak_IR = pd.read_pickle(r'data/predictions/pred_pred_num_peak_IR.pickle')
     dtf_test = pd.read_pickle(r'data/raw/test_dtf_data_IR_smile_no_dup_no_conv.pickle')
     dtf_train = pd.read_pickle(r'data/raw/train_dtf_data_IR_smile_no_dup_no_conv.pickle')
     dtf_validation = pd.read_pickle(r'data/raw/validation_dtf_data_IR_smile_no_dup_no_conv.pickle')
-
-    # dtf_test = dtf_test.drop(
-    #     ['PRED_NUM_PEAK_DOWN', 'PRED_NUM_PEAK_UP', 'MOLECULAR_FINGERPRINT', 'MOLECULAR_FINGERPRINT_MORGAN'], axis=1)
-    # dtf_train = dtf_train.drop(
-    #     ['PRED_NUM_PEAK_DOWN', 'PRED_NUM_PEAK_UP', 'MOLECULAR_FINGERPRINT', 'MOLECULAR_FINGERPRINT_MORGAN'], axis=1)
-    # dtf_validation = dtf_validation.drop(
-    #     ['PRED_NUM_PEAK_DOWN', 'PRED_NUM_PEAK_UP', 'MOLECULAR_FINGERPRINT', 'MOLECULAR_FINGERPRINT_MORGAN'], axis=1)
-
-
-    # dtf_test = add_external_feature(dtf_test, dct_pred_num_peak_down['test'],
-    #                                 'PRED_NUM_PEAK', 'PRED_NUM_PEAK_DOWN')
-    # dtf_test = add_external_feature(dtf_test, dct_pred_num_peak_up['test'],
-    #                                 'PRED_NUM_PEAK', 'PRED_NUM_PEAK_UP')
-    #
-    # dtf_validation = add_external_feature(dtf_validation, dct_pred_num_peak_down['validation'],
-    #                                 'PRED_NUM_PEAK', 'PRED_NUM_PEAK_DOWN')
-    # dtf_validation = add_external_feature(dtf_validation, dct_pred_num_peak_up['validation'],
-    #                                 'PRED_NUM_PEAK', 'PRED_NUM_PEAK_UP')
-    #
-    # dtf_train = add_external_feature(dtf_train, dct_pred_num_peak_down['train'],
-    #                                 'PRED_NUM_PEAK', 'PRED_NUM_PEAK_DOWN')
-    # dtf_train = add_external_feature(dtf_train, dct_pred_num_peak_up['train'],
-    #                                 'PRED_NUM_PEAK', 'PRED_NUM_PEAK_UP')
 
     dtf_test = add_external_feature(dtf_test, dct_pred_num_peak_IR['test'],
                                     'PRED_NUM_PEAK', 'PRED_NUM_PEAK')
@@ -85,7 +57,6 @@ if __name__ == '__main__':
                                     'PRED_NUM_PEAK', 'PRED_NUM_PEAK')
     dtf_validation = add_external_feature(dtf_validation, dct_pred_num_peak_IR['validation'],
                                     'PRED_NUM_PEAK', 'PRED_NUM_PEAK')
-
 
     dtf_train = add_morgan_fingerprint(dtf_train)
     dtf_test = add_morgan_fingerprint(dtf_test)
@@ -98,4 +69,4 @@ if __name__ == '__main__':
     pd.to_pickle(dtf_test, r'data/raw/test_dtf_data_IR_smile_no_dup_no_conv.pickle')
     pd.to_pickle(dtf_train, r'data/raw/train_dtf_data_IR_smile_no_dup_no_conv.pickle')
     pd.to_pickle(dtf_validation, r'data/raw/validation_dtf_data_IR_smile_no_dup_no_conv.pickle')
-    print('fine')
+    print('end')

@@ -1,13 +1,10 @@
 import torch
 from Scripts.dataset import MoleculeDataset
 from torch_geometric.loader import DataLoader
-
 from Scripts.script_model.model import GNN, GINE, ClassModel, ModelPredPos, ModelPredNumPeak, GINEGLOBAL, ClassModelGlobal
-from Scripts.utils import resume, count_parameters, enable_dropout, apply_mask, count_matched_peaks, count_num_peaks
-from sklearn.metrics import f1_score
+from Scripts.utils_model.utils_model import resume, count_parameters, enable_dropout
 import pandas as pd
 import numpy as np
-import scipy
 from tqdm import tqdm
 import os
 
@@ -31,7 +28,7 @@ def predict(config, config_model, mc_sam):
 
 
         true_dataset = pd.read_pickle(f"data/raw/{str_dataset}_{config['starting_dtf']}.pickle")
-        true_dataset.rename(columns={'raman_pred': 'raman_pred_num_peak'}, inplace=True)
+        true_dataset.rename(columns={'IR_pred': 'IR_pred_num_peak'}, inplace=True)
         dataset = MoleculeDataset(root="data", filename=f"{str_dataset}_{config['starting_dtf']}.pickle",
                                        target_col=config['target_col'], path_proc=path_proc, test=str_dataset,
                                   global_feature_col=config.get('global_feature_list', []),

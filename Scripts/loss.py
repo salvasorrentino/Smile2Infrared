@@ -3,7 +3,7 @@ import numpy as np
 import scipy
 import torch.nn.functional as F
 from scipy import signal
-from Scripts.utils import count_matched_peaks, apply_mask
+from Scripts.utils import count_matched_peaks
 
 import pickle
 
@@ -272,18 +272,18 @@ class F1Loss(torch.nn.Module):
 
         #for arr_pred, arr_true in zip(y_pred_pd, y_true_pd):
 
-        # arr_pred = data_s.raman_pred
-        # arr_true = data_s.RAMAN_SPECTRUM_1
+        # arr_pred = data_s.IR_pred
+        # arr_true = data_s.IR_SPECTRUM_1
 
         mask, _ = signal.find_peaks(y_pred_pd, prominence=self.prominence)
         mask = mask.tolist()
-        #raman_pred_mask_int = apply_mask(y_pred, mask)
+        #IR_pred_mask_int = apply_mask(y_pred, mask)
 
         mask_true, _ = signal.find_peaks(y_true_pd)
         mask_true = mask_true.tolist()
         #yy_true = apply_mask(y_true, mask_true)
 
-        # tp = count_matched_peaks(yy_true, raman_pred_mask_int, tolerance)
+        # tp = count_matched_peaks(yy_true, IR_pred_mask_int, tolerance)
         tp = count_matched_peaks(mask_true, mask, self.tolerance)
         fp = len(mask) - tp
         fn = len(mask_true) - tp

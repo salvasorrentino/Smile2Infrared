@@ -3,16 +3,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import pickle
-import os
 import plotly.express as px
 import plotly.graph_objects as go
 import scipy
-from utils import count_matched_peaks, count_num_peaks, apply_mask, nomi_file_in_cartella, calc_gl_f1
-
-from sklearn.preprocessing import PowerTransformer, MinMaxScaler
+from utils import count_matched_peaks, count_num_peaks, apply_mask, nomi_file_in_cartella
 from sklearn.metrics import confusion_matrix
-from ast import literal_eval
+
 
 Pred_names = nomi_file_in_cartella(r'.\data\predictions')
 
@@ -20,17 +16,17 @@ Pred_names = nomi_file_in_cartella(r'.\data\predictions')
 def display_molecule(selected_mol, prominence, up=False, upper=False, qm9s=False, upper_t=False):
     #Implementation for IR Spectrum
     if 'IR_SPECTRUM_1' in selected_mol.index:
-        selected_mol.rename(index={'IR_SPECTRUM_1': 'RAMAN_SPECTRUM_1'}, inplace=True)
-        selected_mol.rename(index={'IR_SPECTRUM_2': 'RAMAN_SPECTRUM_2'}, inplace=True)
+        selected_mol.rename(index={'IR_SPECTRUM_1': 'IR_SPECTRUM_1'}, inplace=True)
+        selected_mol.rename(index={'IR_SPECTRUM_2': 'IR_SPECTRUM_2'}, inplace=True)
 
     smile_target = selected_mol[r'smile']
     st.write(rf"Molecule's smile: " + smile_target)
 
-    raman_pred = selected_mol['raman_pred'].tolist()
-    raman_true = selected_mol['raman_true'].tolist()
-    mask, _ = scipy.signal.find_peaks(raman_pred, prominence=prominence)
+    IR_pred = selected_mol['IR_pred'].tolist()
+    IR_true = selected_mol['IR_true'].tolist()
+    mask, _ = scipy.signal.find_peaks(IR_pred, prominence=prominence)
     mask = mask.tolist()
-    raman_pred_mask = apply_mask(raman_pred, mask)
+    IR_pred_mask = apply_mask(IR_pred, mask)
 
     fig_rnd_mol = go.Figure()
 
@@ -56,14 +52,14 @@ def display_molecule(selected_mol, prominence, up=False, upper=False, qm9s=False
     else:
         mod = 0
 
-    fig_rnd_mol.add_trace(go.Scatter(x=np.linspace((300 + mod + mod3), (2100 + mod + mod1), len(raman_true)), y=raman_true,
+    fig_rnd_mol.add_trace(go.Scatter(x=np.linspace((300 + mod + mod3), (2100 + mod + mod1), len(IR_true)), y=IR_true,
                                      mode='lines', name='True'))
-    fig_rnd_mol.add_trace(go.Scatter(x=np.linspace((300 + mod + mod3), (2100 + mod + mod1), len(raman_true)), y=raman_pred_mask,
+    fig_rnd_mol.add_trace(go.Scatter(x=np.linspace((300 + mod + mod3), (2100 + mod + mod1), len(IR_true)), y=IR_pred_mask,
                                      mode='lines', name='Predicted_mask'))
-    fig_rnd_mol.add_trace(go.Scatter(x=np.linspace((300 + mod + mod3), (2100 + mod + mod1), len(raman_true)), y=raman_pred,
+    fig_rnd_mol.add_trace(go.Scatter(x=np.linspace((300 + mod + mod3), (2100 + mod + mod1), len(IR_true)), y=IR_pred,
                                      mode='lines', name='Predicted'))
-    fig_rnd_mol.add_trace(go.Scatter(x=np.linspace((300 + mod + mod3), (2100 + mod + mod1), len(raman_true)),
-                                     y=np.array(data['raman_true'].to_list()).mean(axis=0),
+    fig_rnd_mol.add_trace(go.Scatter(x=np.linspace((300 + mod + mod3), (2100 + mod + mod1), len(IR_true)),
+                                     y=np.array(data['IR_true'].to_list()).mean(axis=0),
                                      mode='lines', name='Mean'))
 
     f1_prom = calc_gl_f1(selected_mol, prominence, tolerance=5)
@@ -81,7 +77,7 @@ def display_molecule(selected_mol, prominence, up=False, upper=False, qm9s=False
     # f1_pro_note = f'Relative f1 ({prominence} prominence): {f1_prom:.4f}'
     # fig_rnd_mol.add_annotation(text=f1_pro_note,
     #                            x=0.5,
-    #                            y=max(raman_true)-1,
+    #                            y=max(IR_true)-1,
     #                            showarrow=False,
     #                            font=dict(size=12, color='black'))
     #
@@ -89,7 +85,7 @@ def display_molecule(selected_mol, prominence, up=False, upper=False, qm9s=False
     #     f1_note = f'Relative f1 (0 prominence): {selected_mol["f1"]:.4f}'
     #     fig_rnd_mol.add_annotation(text=f1_note,
     #                                x=0.5,
-    #                                y=max(raman_true)-3,
+    #                                y=max(IR_true)-3,
     #                                showarrow=False,
     #                                font=dict(size=12, color='black'))
 
@@ -103,16 +99,16 @@ def display_molecule(selected_mol, prominence, up=False, upper=False, qm9s=False
     # Representation of the predicted spectra and the full real one
     fig_rnd_mol1 = go.Figure()
     if up:
-        sel_mol = selected_mol['RAMAN_SPECTRUM_2']
+        sel_mol = selected_mol['IR_SPECTRUM_2']
     else:
-        sel_mol = selected_mol['RAMAN_SPECTRUM_1']
+        sel_mol = selected_mol['IR_SPECTRUM_1']
 
     yy_pred = np.interp(np.linspace(0, 1, len(sel_mol)), np.linspace(0, 1,
-                                            len(selected_mol['raman_pred'])), selected_mol['raman_pred'])
+                                            len(selected_mol['IR_pred'])), selected_mol['IR_pred'])
 
     mask, _ = scipy.signal.find_peaks(yy_pred, prominence=prominence)
     mask = mask.tolist()
-    raman_pred_mask_int = apply_mask(yy_pred, mask)
+    IR_pred_mask_int = apply_mask(yy_pred, mask)
     yy_true = np.interp(np.linspace(0, 1, len(sel_mol)), np.linspace(0, 1,
                                             len(sel_mol)), sel_mol)
 
@@ -120,7 +116,7 @@ def display_molecule(selected_mol, prominence, up=False, upper=False, qm9s=False
         go.Scatter(x=np.linspace(300 + mod + mod3, 2100 + mod + mod1, len(yy_true)), y=yy_true, mode='lines',
                    name='True'))
     fig_rnd_mol1.add_trace(
-        go.Scatter(x=np.linspace(300 + mod + mod3, 2100 + mod + mod1, len(yy_true)), y=raman_pred_mask_int, mode='lines',
+        go.Scatter(x=np.linspace(300 + mod + mod3, 2100 + mod + mod1, len(yy_true)), y=IR_pred_mask_int, mode='lines',
                    name='Predicted'))
 
     fig_rnd_mol1.update_layout(title=selected_mol['smile'],
@@ -137,7 +133,7 @@ def display_molecule(selected_mol, prominence, up=False, upper=False, qm9s=False
     # f1_pro_note = f'Relative f1 ({prominence} prominence): {f1_prom:.4f}'
     # fig_rnd_mol1.add_annotation(text=f1_pro_note,
     #                            x=0.5,
-    #                            y=max(raman_true)-1,
+    #                            y=max(IR_true)-1,
     #                            showarrow=False,
     #                            font=dict(size=12, color='black'))
     #
@@ -145,7 +141,7 @@ def display_molecule(selected_mol, prominence, up=False, upper=False, qm9s=False
     #     f1_note = f'Relative f1 (0 prominence): {selected_mol["f1"]:.4f}'
     #     fig_rnd_mol1.add_annotation(text=f1_note,
     #                                x=0.5,
-    #                                y=max(raman_true)-3,
+    #                                y=max(IR_true)-3,
     #                                showarrow=False,
     #                                font=dict(size=12, color='black'))
 
@@ -157,8 +153,8 @@ def display_molecule(selected_mol, prominence, up=False, upper=False, qm9s=False
     st.plotly_chart(fig_rmse)
 
 def plot_confusion_matrix(df):
-    pred = (np.array(df.raman_pred.to_list()).reshape(-1) > 1).astype(int)
-    true = (np.array(df.raman_true.to_list()).reshape(-1) > 1).astype(int)
+    pred = (np.array(df.IR_pred.to_list()).reshape(-1) > 1).astype(int)
+    true = (np.array(df.IR_true.to_list()).reshape(-1) > 1).astype(int)
     cm_matrix = confusion_matrix(pred, true)
     fig = plt.figure(figsize=(10, 4))
     sns.heatmap(cm_matrix/np.sum(cm_matrix), annot=True, fmt='.2%', cmap='Blues', )
@@ -172,7 +168,7 @@ def read_predictions(nome):
     preds = pd.read_parquet(r".\data\predictions/" + nome)
     #true = pd.read_pickle(r".\data\raw\test_dtf_data_smile_no_conv_inter_" + inter + ".pickle")
     preds['rmse'] = ''
-    preds['rmse'] = preds.apply(lambda x: compute_rmse(x.raman_pred, x.raman_true), axis=1)
+    preds['rmse'] = preds.apply(lambda x: compute_rmse(x.IR_pred, x.IR_true), axis=1)
     return preds
 
 opt = [x * 0.1 for x in range(0, 11)]
