@@ -243,7 +243,7 @@ def metrics_ir_peaks(result_df):
     return result_df
 
 
-def metrics_spectra(result_df, conv, leng, true_col='IR_SPECTRUM_CONV', pred_col='IR_pred'):
+def metrics_spectra(result_df, conv, leng, true_col='IR_SPECTRUM_CONV', pred_col='IR_pred_conv'):
     result_df['sis'] = result_df.apply(lambda row: spectral_information_similarity(pd.array(row[true_col]),
                                                                                    pd.array(row[pred_col]), conv,
                                                                                    frequencies=leng), axis=1)

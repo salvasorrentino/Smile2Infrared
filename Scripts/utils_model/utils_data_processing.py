@@ -64,7 +64,7 @@ def post_processing_pred(dtf_pred, gamma=7.5, kernel_size=600, true='IR_SPECTRUM
                                               axis=1)
 
     # Convolve RAMAN_SPECTRUM and prediction with a lorentzian
-    dtf_pred[pred]=dtf_pred.apply(lambda row:  convolve_with_lorentzian(row[pred], lorentzian_kernel), axis=1)
+    dtf_pred['IR_pred_conv']=dtf_pred.apply(lambda row:  convolve_with_lorentzian(row[pred], lorentzian_kernel), axis=1)
     dtf_pred['IR_SPECTRUM_CONV']=dtf_pred.apply(lambda row:  convolve_with_lorentzian(row[true], lorentzian_kernel), axis=1)
 
     return dtf_pred

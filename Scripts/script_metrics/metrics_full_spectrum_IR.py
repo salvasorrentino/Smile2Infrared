@@ -24,7 +24,7 @@ result_df = post_processing_pred(result_df)
 
 result_df = metrics_ir_peaks(result_df)
 
-result_df = metrics_spectra(result_df, conv, leng, true_col='IR_SPECTRUM')
+result_df = metrics_spectra(result_df, conv, leng, true_col='IR_SPECTRUM_CONV')
 
 # Save the IR dataframe
 # result_df.to_pickle(r'data/results/pred_spectra_mol2IR_IR.pickle')
